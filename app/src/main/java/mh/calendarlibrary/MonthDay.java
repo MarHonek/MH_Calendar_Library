@@ -60,7 +60,7 @@ public class MonthDay {
     }
 
     public void setDayFlag(int flag) {
-        this.dayFlag = dayFlag;
+        this.dayFlag = flag;
     }
 
     public int getDayFlag() {

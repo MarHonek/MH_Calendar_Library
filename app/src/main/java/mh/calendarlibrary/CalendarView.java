@@ -21,7 +21,9 @@ public class CalendarView extends LinearLayout {
     private MonthPagerAdapter adapter;
     private ViewPager pager;
 
-    private OnDatePickListener onDatePickListener;
+    OnDatePickListener onDatePickListener;
+    OnDayClickListener onDayClickListener;
+    OnDayLongClickListener onDayLongClickListener;
 
     public CalendarView(Context context) {
         this(context, null);
@@ -36,8 +38,11 @@ public class CalendarView extends LinearLayout {
         init(attrs);
     }
 
-    public void setAdapter(CalendarAdapter adapter) {
-        createCalendar(adapter);
+    public void setAdapter(CalendarAdapter calendarAdapter) {
+        adapter = new MonthPagerAdapter(getContext(), properties, calendarAdapter, this);
+        adapter.deleteMonthCache();
+        pager.setAdapter(adapter);
+        pager.setCurrentItem(adapter.getIndexOfCurrentMonth());
     }
 
     private void init(AttributeSet attrs) {
@@ -57,9 +62,7 @@ public class CalendarView extends LinearLayout {
             }
         }
         setOrientation(VERTICAL);
-    }
 
-    private void createCalendar(CalendarAdapter calendarAdapter) {
         WeekLabelView weekLabelView = new WeekLabelView(getContext());
         addView(weekLabelView);
 
@@ -67,10 +70,7 @@ public class CalendarView extends LinearLayout {
         pager.setOffscreenPageLimit(1);
         addView(pager);
 
-        adapter = new MonthPagerAdapter(getContext(), properties, calendarAdapter);
-        pager.setAdapter(adapter);
         pager.addOnPageChangeListener(mPageListener);
-        pager.setCurrentItem(adapter.getIndexOfCurrentMonth());
         pager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
             public void transformPage(View page, float position) {
@@ -78,6 +78,7 @@ public class CalendarView extends LinearLayout {
             }
         });
     }
+
     
     private void showMonth(int position) {
         pager.setCurrentItem(position, true);
@@ -87,6 +88,13 @@ public class CalendarView extends LinearLayout {
         showMonth(adapter.getIndexOfCurrentMonth());
     }
 
+    public void showNextMonth() {
+        showMonth(pager.getCurrentItem() + 1);
+    }
+
+    public void showPreviousMonth() {
+        showMonth(pager.getCurrentItem() - 1);
+    }
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -111,13 +119,31 @@ public class CalendarView extends LinearLayout {
         public void onPageScrollStateChanged(int state) {
         }
     };
-    
-     public interface OnDatePickListener {
+
+    public interface OnDatePickListener {
         void onDatePick(DateTime dateTime);
+
+    }
+
+    public interface OnDayClickListener {
+        void onDayClick(DateTime dateTime);
+
+    }
+
+    public interface OnDayLongClickListener {
+        void onDayLongClick(DateTime dateTime);
 
     }
 
     public void setOnDatePickListener(OnDatePickListener listener) {
         onDatePickListener = listener;
+    }
+
+    public void setOnDayClickListener(OnDayClickListener listener) {
+        onDayClickListener = listener;
+    }
+
+    public void setOnDayLongClickListener(OnDayLongClickListener listener) {
+        onDayLongClickListener = listener;
     }
 }

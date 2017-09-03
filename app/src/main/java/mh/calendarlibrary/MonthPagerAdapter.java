@@ -25,18 +25,21 @@ public class MonthPagerAdapter extends PagerAdapter {
     private Context context;
 
     private CalendarViewProperties properties;
+    private CalendarView calendarView;
 
-    public MonthPagerAdapter(Context context, CalendarViewProperties properties, CalendarAdapter adapter) {
+    public MonthPagerAdapter(Context context, CalendarViewProperties properties, CalendarAdapter adapter, CalendarView calendarView) {
         this.context = context;
         this.adapter = adapter;
         this.properties = properties;
+        this.calendarView = calendarView;
+
         minDate = new DateTime(1900 , 1, 1, 0, 0);
         maxDate = new DateTime(2200, 12, 31, 0, 0);
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        MonthView monthView = new MonthView(context, getItem(position), adapter);
+        MonthView monthView = new MonthView(context, getItem(position), adapter, calendarView);
         container.addView(monthView);
         monthViewCache.put(position, monthView);
         return monthView;
@@ -91,6 +94,10 @@ public class MonthPagerAdapter extends PagerAdapter {
         int year =  index / 12 + minDate.getYear();
         int month = index % 12 + 1;
         return new DateTime(year, month, 1, 0, 0);
+    }
+
+    protected void deleteMonthCache() {
+        monthCache = new SparseArrayCompat<>();
     }
 
 }
