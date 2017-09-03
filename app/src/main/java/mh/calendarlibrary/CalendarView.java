@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.joda.time.DateTime;
+
 import mh.calendarlibrary.adapters.CalendarAdapter;
 
 /**
@@ -15,7 +17,11 @@ import mh.calendarlibrary.adapters.CalendarAdapter;
  */
 public class CalendarView extends LinearLayout {
 
-    CalendarViewProperties properties;
+    private CalendarViewProperties properties;
+    private MonthPagerAdapter adapter;
+    private ViewPager pager;
+
+    private OnDatePickListener onDatePickListener;
 
     public CalendarView(Context context) {
         this(context, null);
@@ -57,11 +63,11 @@ public class CalendarView extends LinearLayout {
         WeekLabelView weekLabelView = new WeekLabelView(getContext());
         addView(weekLabelView);
 
-        ViewPager pager = new ViewPager(getContext());
+        pager = new ViewPager(getContext());
         pager.setOffscreenPageLimit(1);
         addView(pager);
 
-        MonthPagerAdapter adapter = new MonthPagerAdapter(getContext(), properties, calendarAdapter);
+        adapter = new MonthPagerAdapter(getContext(), properties, calendarAdapter);
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(mPageListener);
         pager.setCurrentItem(adapter.getIndexOfCurrentMonth());
@@ -72,6 +78,15 @@ public class CalendarView extends LinearLayout {
             }
         });
     }
+    
+    private void showMonth(int position) {
+        pager.setCurrentItem(position, true);
+    }
+
+    public void backToToday() {
+        showMonth(adapter.getIndexOfCurrentMonth());
+    }
+
 
     private ViewPager.OnPageChangeListener mPageListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -80,6 +95,10 @@ public class CalendarView extends LinearLayout {
 
         @Override
         public void onPageSelected(int position) {
+       
+            if(onDatePickListener != null) {
+                onDatePickListener.onDatePick(adapter.getDateOfIndex(position));
+            }
             /*if (mIsChangedByUser) {
                 mIsChangedByUser = false;
                 return;
@@ -92,4 +111,13 @@ public class CalendarView extends LinearLayout {
         public void onPageScrollStateChanged(int state) {
         }
     };
+    
+     public interface OnDatePickListener {
+        void onDatePick(DateTime dateTime);
+
+    }
+
+    public void setOnDatePickListener(OnDatePickListener listener) {
+        onDatePickListener = listener;
+    }
 }

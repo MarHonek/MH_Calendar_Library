@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.joda.time.DateTime;
+import org.joda.time.Months;
 
 import mh.calendarlibrary.adapters.CalendarAdapter;
 
@@ -18,7 +19,7 @@ public class MonthPagerAdapter extends PagerAdapter {
     private SparseArrayCompat<Month> monthCache = new SparseArrayCompat<>();
     private SparseArrayCompat<MonthView> monthViewCache = new SparseArrayCompat<>();
 
-    private DateTime minDate;
+    private DateTime minDate, maxDate;
     private CalendarAdapter adapter;
 
     private Context context;
@@ -30,6 +31,7 @@ public class MonthPagerAdapter extends PagerAdapter {
         this.adapter = adapter;
         this.properties = properties;
         minDate = new DateTime(1900 , 1, 1, 0, 0);
+        maxDate = new DateTime(2200, 12, 31, 0, 0);
     }
 
     @Override
@@ -38,12 +40,6 @@ public class MonthPagerAdapter extends PagerAdapter {
         container.addView(monthView);
         monthViewCache.put(position, monthView);
         return monthView;
-
-       /* int selectedDay = mSelectedDayCache.get(position, -1);
-        if (selectedDay != -1) {
-            monthView.setSelectedDay(selectedDay);
-            mSelectedDayCache.removeAt(mSelectedDayCache.indexOfKey(position));
-        }*/
     }
 
 
@@ -74,7 +70,7 @@ public class MonthPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return Integer.MAX_VALUE;
+        return Months.monthsBetween(minDate.withTimeAtStartOfDay(), maxDate.withTimeAtStartOfDay()).getMonths();
     }
 
     @Override
@@ -85,10 +81,16 @@ public class MonthPagerAdapter extends PagerAdapter {
 
     protected int getIndexOfCurrentMonth() {
         DateTime dateTime = new DateTime();
-        return getIndexOfMonth(dateTime.getYear(), dateTime.getMonthOfYear()-1);
+        return getIndexOfMonth(dateTime.getYear(), dateTime.getMonthOfYear());
     }
 
     protected int getIndexOfMonth(int year, int month) {
-        return (year - minDate.getYear()) * 12 + month;
+        return (year - minDate.getYear()) * 12 + month - 1;
     }
+    protected DateTime getDateOfIndex(int index) {
+        int year =  index / 12 + minDate.getYear();
+        int month = index % 12 + 1;
+        return new DateTime(year, month, 1, 0, 0);
+    }
+
 }
