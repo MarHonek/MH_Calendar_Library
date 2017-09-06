@@ -45,6 +45,12 @@ public class CalendarView extends LinearLayout {
         pager.setCurrentItem(adapter.getIndexOfCurrentMonth());
     }
 
+    public void updateAdapter(CalendarAdapter calendarAdapter) {
+        adapter.setCalendarAdapter(calendarAdapter);
+        pager.setCurrentItem(adapter.getIndexOfCurrentMonth());
+        adapter.notifyDataSetChanged();
+    }
+
     private void init(AttributeSet attrs) {
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CalendarView);

@@ -71,6 +71,10 @@ public class MonthPagerAdapter extends PagerAdapter {
         monthViewCache.remove(position);
     }
 
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
     @Override
     public int getCount() {
         return Months.monthsBetween(minDate.withTimeAtStartOfDay(), maxDate.withTimeAtStartOfDay()).getMonths();
@@ -81,6 +85,9 @@ public class MonthPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
+    public void setCalendarAdapter(CalendarAdapter adapter) {
+        this.adapter = adapter;
+    }
 
     protected int getIndexOfCurrentMonth() {
         DateTime dateTime = new DateTime();
