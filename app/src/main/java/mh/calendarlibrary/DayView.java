@@ -19,7 +19,7 @@ public class DayView extends LinearLayout {
     private View view;
 
 
-    private static final int backgroundOpacity = 150;
+    private static final int backgroundOpacity = 120;
     private static final float viewOpacity = 0.3f;
 
 

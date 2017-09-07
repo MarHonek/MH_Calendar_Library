@@ -45,7 +45,9 @@ public class MonthView extends TableLayout {
                     @Override
                     public void onClick(View view) {
                         if(monthDay.isCurrentMonth()) {
-                            calendarView.onDayClickListener.onDayClick(monthDay.getDateTime());
+                            if(calendarView.onDayClickListener != null) {
+                                calendarView.onDayClickListener.onDayClick(monthDay.getDateTime());
+                            }
                         } else {
                             if(monthDay.getDayFlag() == MonthDay.PREV_MONTH_DAY) {
                                 calendarView.showPreviousMonth();
@@ -61,7 +63,9 @@ public class MonthView extends TableLayout {
                     @Override
                     public boolean onLongClick(View view) {
                         if(monthDay.isCurrentMonth()) {
-                            calendarView.onDayLongClickListener.onDayLongClick(monthDay.getDateTime());
+                            if(calendarView.onDayLongClickListener != null) {
+                                calendarView.onDayLongClickListener.onDayLongClick(monthDay.getDateTime());
+                            }
                         }
                         return true;
                     }
